@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 /** This class has a main function and can be run to both parse a specified MIDI text file and then output a random composition to a different specified text file. */
 public class Main
 {
+    /** Data-tracking objects for 128 different MIDI notes. */
     private static MIDIData[] midis = new MIDIData[128];
 
     /** The first MIDI note recorded when parsing the text file. */
@@ -20,7 +21,7 @@ public class Main
 
     public static void main( String[] args ) throws FileNotFoundException
     {
-	/* At the start of the program, initialize 128 different MIDI notes. */
+	/* At the start of the program, initialize the 128 different data-tracking objects. */
 	for ( int i = 0; i < midis.length; ++i )
 	{
 	    midis[i] = new MIDIData( i );
@@ -31,14 +32,17 @@ public class Main
 	composeScore( "C:/Users/BBL/Documents/Pure Data/violin-score.txt", 20000, 1f, 1f ); // used 150000 for piano
     }
 
+    /** Parse a specially formatted MIDI text file to analyze the sequential note probability (as well as delay, velocity, etc.).
+     * A correctly formatted file can be obtained by visiting http://flashmusicgames.com/midi/mid2txt.php and converting a .mid file with the "Absolute" timestamp option, and then only copying the lines that are formatted as follows:
+     * 192 On ch=1 n=36 v=23
+     *
+     * @param filePath
+     *            The absolute file path for the output file (should end in .txt).
+     * @throws FileNotFoundException */
     private static void parseMIDITextFile( String filePath ) throws FileNotFoundException
     {
 	Scanner scanner = new Scanner( new File( filePath ) );
 
-	/*
-	 * Example of how text file must be formatted:
-	 * 192 On ch=1 n=36 v=23
-	 */
 	Pattern p = Pattern.compile( "(\\d+) (\\w+) ch=(\\d+) n=(\\d+) v=(\\d+)" );
 
 	/* "time" must be in scope outside of the loop so that we can use it to terminate the final note. */
@@ -68,13 +72,13 @@ public class Main
 			md.recordNote( time, note );
 		    }
 
-		    midis[note].logNoteOn( time, velocity );
+		    midis[note].enableNote( time, velocity );
 
 		    finalNote = note;
 		}
 		else
 		{
-		    midis[note].logNoteOff( time );
+		    midis[note].disableNote( time );
 		}
 	    }
 	    else
@@ -92,10 +96,10 @@ public class Main
 	 */
 	midis[finalNote].recordNote( time, firstNote );
 
-	// printData();
+	printData();
     }
 
-    /** Prints the note probability for each midi note (creating a 128x128 grid).
+    /** Prints the note probability for each MIDI note (creating a 128x128 grid).
      * This should only be called AFTER parseMIDITextFile has been called.
      * Data can be more easily visualized by pasting into Excel and using "Data" > "Text to Columns" (with a Space delimiter). */
     private static void printData()
@@ -106,7 +110,18 @@ public class Main
 	}
     }
 
-    private static void composeScore( String filePath, int durationMS, float startDelayModifier, float endDelayModifier ) throws FileNotFoundException
+    /** Use the parsed MIDI data to randomly compose data for a new MIDI text file.
+     *
+     * @param filePath
+     *            The absolute file path for the output file (should end in .txt).
+     * @param duration
+     *            The desired duration of the composition (in milliseconds). Actual duration may be up to twice as long as algorithm will attempt to end on the input file's final note.
+     * @param startSpeed
+     *            The speed of the composition at the start. "2" will result in the start of the piece sounding twice as fast as normal.
+     * @param endSpeed
+     *            The speed of the piece slowly approaches this amount over its entire duration. E.g., startSpeed=1 and endSpeed=2 will result in the piece starting at a normal speed and slowly increasing until it is doubled at the end.
+     * @throws FileNotFoundException */
+    private static void composeScore( String filePath, int duration, float startSpeed, float endSpeed ) throws FileNotFoundException
     {
 	System.out.println( "Beginning composition..." );
 
@@ -115,12 +130,13 @@ public class Main
 	int time = 0;
 	int note = firstNote;
 
-	// Loop while time is < than specified time OR we're not on final note and still under 2x the specified time
-	while ( time < durationMS || ( note != finalNote && time < 2 * durationMS ) )
+	/* Loop while time is < than specified time OR we're not on final note and still under 2x the specified time */
+	while ( time < duration || ( note != finalNote && time < 2 * duration ) )
 	{
-	    note = midis[note].getNextRandomNote();
-	    float percent = Util.Lerp( startDelayModifier, endDelayModifier, (float) time / durationMS );
-	    int delay = Math.round( percent * midis[note].getAverageDelay() );
+	    note = midis[note].getRandomSequentialNote();
+
+	    float speed = Util.Lerp( startSpeed, endSpeed, (float) time / duration );
+	    int delay = Math.round( midis[note].getAverageDelay() / speed );
 
 	    writer.printf( "%d %s %d;%n", time == 0 ? 0 : delay, "vel", midis[note].getAverageVelocity() );
 	    writer.printf( "%d %s %d;%n", 0, "dur", midis[note].getAverageDuration() );
@@ -133,5 +149,4 @@ public class Main
 
 	writer.close();
     }
-
 }

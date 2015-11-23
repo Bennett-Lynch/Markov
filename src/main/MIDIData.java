@@ -1,9 +1,11 @@
 package main;
+
 import java.text.DecimalFormat;
 import java.util.Random;
 
 public class MIDIData
 {
+    /** All associated data is for this particular MIDI note number. */
     public int noteNumber;
 
     /** The average duration for this MIDI note. */
@@ -16,7 +18,7 @@ public class MIDIData
     /** The total number of velocities recorded thus far (needed to calculate average). */
     private int numVelocityRecorded;
 
-    /** A private record of when this note was last turned on. */
+    /** When this note was last turned on. */
     private int onTimestamp;
 
     /** Enabled after a note is logged as on, so that this MIDI note will listen for its next sequential note. */
@@ -24,13 +26,15 @@ public class MIDIData
 
     /** The average delay (time until another MIDI note is played) for this MIDI note. */
     private double averageDelay;
+    /** The total number of delays recorded thus far (needed to calculate average). */
     private int numDelayRecorded;
 
     /** The percent chance for all 128 different notes to follow this one. */
     private double[] otherNoteProbabilities = new double[128];
     /** The total number of notes recorded thus far (needed to calculate percent chances). */
-    private int totalOtherNoteCounts;
+    private int numNotesRecorded;
 
+    /** Java's random number generator. */
     private Random rng = new Random();
 
     public MIDIData( int noteNumber )
@@ -38,7 +42,8 @@ public class MIDIData
 	this.noteNumber = noteNumber;
     }
 
-    public void logNoteOn( int time, int velocity )
+    /** Turn this note on and instruct it to await a following note to record as well. */
+    public void enableNote( int time, int velocity )
     {
 	onTimestamp = time;
 
@@ -58,24 +63,26 @@ public class MIDIData
 
 	    for ( int i = 0; i < otherNoteProbabilities.length; ++i )
 	    {
-		otherNoteProbabilities[i] = ( otherNoteProbabilities[i] * totalOtherNoteCounts + ( currentNote == i ? 1 : 0 ) ) / ( totalOtherNoteCounts + 1 );
+		otherNoteProbabilities[i] = ( otherNoteProbabilities[i] * numNotesRecorded + ( currentNote == i ? 1 : 0 ) ) / ( numNotesRecorded + 1 );
 	    }
 
-	    totalOtherNoteCounts++;
+	    numNotesRecorded++;
 
 	    waitingSequentialNote = false;
 	}
     }
 
-    public void logNoteOff( int time )
+    /** Turn this note off. */
+    public void disableNote( int time )
     {
 	int duration = time - onTimestamp;
 
 	averageDuration = ( averageDuration * numDurationRecorded + duration ) / ++numDurationRecorded;
     }
 
-    /** Generate a new random note to follow this note. */
-    public int getNextRandomNote()
+    /** Generate a new random note to follow this note.
+     * Should only be called after all parsing is complete. */
+    public int getRandomSequentialNote()
     {
 	double random = rng.nextDouble();
 
