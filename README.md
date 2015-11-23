@@ -1,6 +1,3 @@
-#### Markov
-Parse MIDI text files and randomly compose new pieces through the use of a Markov chain algorithm.
-
 #### Instructions
 These instructions assume you already have the knowledge needed to compile and run Java source files.
 
@@ -14,8 +11,7 @@ These instructions assume you already have the knowledge needed to compile and r
 ![](https://raw.githubusercontent.com/Bennett-Lynch/Markov/master/samples/pure-data-setup.png)
 
 #### A finished example piece:
-Made by using music composed by Hans Zimmer for the Inception and Interstellar soundtracks:
-
+Made by using music composed by Hans Zimmer for the Inception and Interstellar soundtracks: 
 https://www.youtube.com/watch?v=wlfExZLTw_Y
 
 #### A visual representation of data parsed from a MIDI text file:
