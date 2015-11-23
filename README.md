@@ -1,5 +1,5 @@
 # Markov
-A program that allows the user to parse MIDI text files and randomly compose new MIDI text files through the use of a Markov chain algorithm.
+Parse MIDI text files and randomly compose new pieces through the use of a Markov chain algorithm.
 
 ![alt tag](http://i.imgur.com/PQFLiFb.png)
 
