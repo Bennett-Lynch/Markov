@@ -13,7 +13,7 @@ These instructions assume you already have the knowledge needed to compile and r
 #### A finished example piece:
 Made by using music composed by Hans Zimmer for the Inception and Interstellar soundtracks:
 
-https://www.youtube.com/watch?v=wlfExZLTw_Y
+https://www.youtube.com/watch?v=7eUP1Sncifg
 
 #### A visual representation of data parsed from a MIDI text file:
 ![](https://raw.githubusercontent.com/Bennett-Lynch/Markov/master/samples/visual-representation.png)
