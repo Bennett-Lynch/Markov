@@ -1,4 +1,4 @@
-#### Instructions
+# Instructions
 These instructions assume you already have the knowledge needed to compile and run Java source files.
 
 1. Convert your .mid file to text using [this free online tool](http://flashmusicgames.com/midi/mid2txt.php) with the "absolute" timestamp option
