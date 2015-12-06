@@ -15,5 +15,5 @@ Made by using music composed by Hans Zimmer for the Inception and Interstellar s
 
 https://www.youtube.com/watch?v=7eUP1Sncifg
 
-# A visual representation of data parsed from a MIDI text file:
+# A visual representation of parsed data:
 ![](https://raw.githubusercontent.com/Bennett-Lynch/Markov/master/samples/visual-representation.png)
