@@ -1,4 +1,4 @@
-# Instructions
+## Instructions
 These instructions assume you already have the knowledge needed to compile and run Java source files.
 
 1. Convert your .mid file to text using [this free online tool](http://flashmusicgames.com/midi/mid2txt.php) with the "absolute" timestamp option
@@ -10,28 +10,10 @@ These instructions assume you already have the knowledge needed to compile and r
 
 ![](https://raw.githubusercontent.com/Bennett-Lynch/Markov/master/samples/pure-data-setup.png)
 
-# A finished example piece:
+## A finished example piece:
 Made by using music composed by Hans Zimmer for the Inception and Interstellar soundtracks:
 
 https://www.youtube.com/watch?v=7eUP1Sncifg
 
-# A visual representation of parsed data:
+## A visual representation of parsed data:
 ![](https://raw.githubusercontent.com/Bennett-Lynch/Markov/master/samples/visual-representation.png)
-
-# One
-test
-
-## Two
-test
-
-### Three
-test
-
-#### Four
-test
-
-##### Five
-test
-
-###### Six
-test
